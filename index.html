@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¡Thiago cumple 3! · Invitación</title>
+<meta name="description" content="Estás invitado al cumpleaños número 3 de Thiago. Zona de construcción, máquinas y mucha diversión.">
+
+<!-- Invitación privada: el enlace funciona para quien lo tenga, pero pedimos
+     a Google y demás buscadores que no la indexen ni la muestren en resultados. -->
+<meta name="robots" content="noindex, nofollow">
+
+<!-- Vista previa al compartir por WhatsApp -->
+<meta property="og:title" content="¡Thiago cumple 3 años!">
+<meta property="og:description" content="Zona de construcción · Toca para ver la invitación y confirmar tu asistencia">
+<meta property="og:image" content="fotos/hero.jpg">
+<meta property="og:type" content="website">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        cat:   '#FFCD11',
+        catd:  '#E5B300',
+        ink:   '#141414',
+        ink2:  '#242424',
+        dirt:  '#8B5E34',
+        alert: '#FF6B00',
+      },
+      fontFamily: {
+        sign: ['Bungee', 'system-ui', 'sans-serif'],
+        body: ['Nunito', 'system-ui', 'sans-serif'],
+      }
+    }
+  }
+}
+</script>
+
+<style>
+  /* ═══════════════════════════════════════════════════════
+     Estilos base — pensados para que se lea fácil a cualquier edad:
+     texto grande, alto contraste y botones de buen tamaño.
+     ═══════════════════════════════════════════════════════ */
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: 'Nunito', system-ui, sans-serif;
+    font-size: 18px;
+    background-color: #141414;
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(255,205,17,.10), transparent 45%),
+      radial-gradient(circle at 85% 70%, rgba(255,107,0,.08), transparent 45%);
+    color: #F5F5F5;
+    overflow-x: hidden;
+  }
+
+  /* Cinta de peligro amarilla/negra, la firma visual de la obra */
+  .hazard {
+    background-image: repeating-linear-gradient(
+      45deg, #FFCD11 0 22px, #141414 22px 44px
+    );
+  }
+  .hazard-thin {
+    background-image: repeating-linear-gradient(
+      45deg, #FFCD11 0 12px, #141414 12px 24px
+    );
+  }
+
+  /* Textura de metal rayado para los paneles */
+  .plate {
+    background-color: #242424;
+    background-image:
+      linear-gradient(135deg, rgba(255,255,255,.05) 25%, transparent 25%,
+                      transparent 50%, rgba(255,255,255,.05) 50%,
+                      rgba(255,255,255,.05) 75%, transparent 75%);
+    background-size: 8px 8px;
+  }
+
+  /* Tornillos decorativos en las esquinas de los carteles */
+  .bolted { position: relative; }
+  .bolted::before, .bolted::after {
+    content: '';
+    position: absolute; top: 10px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #6b6b6b, #1a1a1a 70%);
+    box-shadow: inset 0 1px 1px rgba(255,255,255,.35);
+  }
+  .bolted::before { left: 10px; }
+  .bolted::after  { right: 10px; }
+
+  /* Botón físico con profundidad: se hunde al presionar */
+  .btn-3d {
+    box-shadow: 0 6px 0 var(--btn-shadow, #8a6f00);
+    transition: transform .08s ease, box-shadow .08s ease, filter .15s ease;
+  }
+  .btn-3d:active {
+    transform: translateY(5px);
+    box-shadow: 0 1px 0 var(--btn-shadow, #8a6f00);
+  }
+
+  /* Foco visible para quien navega con teclado */
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible {
+    outline: 4px solid #FFCD11;
+    outline-offset: 3px;
+  }
+
+  /* ── Animaciones ── */
+  @keyframes dig {
+    0%, 100% { transform: rotate(0deg); }
+    35%      { transform: rotate(-16deg); }
+    60%      { transform: rotate(10deg); }
+  }
+  @keyframes bump {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25%      { transform: translateY(-3px) rotate(-.6deg); }
+    75%      { transform: translateY(-1px) rotate(.6deg); }
+  }
+  @keyframes drive {
+    from { transform: translateX(-25vw); }
+    to   { transform: translateX(115vw); }
+  }
+  @keyframes spin-wheel { to { transform: rotate(360deg); } }
+  @keyframes float-dust {
+    0%   { opacity: 0;   transform: translate(0,0) scale(.6); }
+    30%  { opacity: .55; }
+    100% { opacity: 0;   transform: translate(var(--dx,20px), -46px) scale(1.5); }
+  }
+  @keyframes blink { 0%,45% { opacity:1 } 50%,95% { opacity:.25 } }
+
+  /* La batea del camión se levanta y descarga */
+  @keyframes tip {
+    0%, 45%, 100% { transform: rotate(0deg); }
+    65%, 80%      { transform: rotate(-34deg); }
+  }
+  /* La cuchilla del bulldozer empuja la tierra */
+  @keyframes push {
+    0%, 100% { transform: translateX(0); }
+    50%      { transform: translateX(14px); }
+  }
+  /* El gancho de la grúa se balancea */
+  @keyframes swing {
+    0%, 100% { transform: rotate(-9deg); }
+    50%      { transform: rotate(9deg); }
+  }
+  /* El bombo de la mezcladora gira */
+  @keyframes mix { to { transform: rotate(-360deg); } }
+  /* Sacudida al tocar una máquina */
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(0deg) scale(1); }
+    20%      { transform: rotate(-4deg) scale(1.06); }
+    50%      { transform: rotate(4deg)  scale(1.06); }
+    80%      { transform: rotate(-2deg) scale(1.03); }
+  }
+
+  .anim-tip   { animation: tip 4s ease-in-out infinite;    transform-box: fill-box; transform-origin: 100% 100%; }
+  .anim-push  { animation: push 2.8s ease-in-out infinite; }
+  .anim-swing { animation: swing 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: top center; }
+  .anim-mix   { animation: mix 3.5s linear infinite;        transform-box: fill-box; transform-origin: center; }
+  .wiggle     { animation: wiggle .5s ease-in-out; }
+
+  /* Cada máquina arranca su ciclo en un momento distinto:
+     así la fila no se ve como un desfile sincronizado. */
+  .maquina:nth-child(2n)   svg [class*="anim-"] { animation-delay: -.9s; }
+  .maquina:nth-child(3n)   svg [class*="anim-"] { animation-delay: -1.7s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .anim-tip, .anim-push, .anim-swing, .anim-mix, .wiggle {
+      animation: none !important;
+    }
+  }
+
+  .anim-dig    { animation: dig 2.6s ease-in-out infinite; transform-origin: 78px 96px; }
+  .anim-bump   { animation: bump 1.1s ease-in-out infinite; }
+  .anim-drive  { animation: drive 14s linear infinite; }
+  .anim-wheel  { animation: spin-wheel 1.6s linear infinite; transform-box: fill-box; transform-origin: center; }
+  .anim-dust   { animation: float-dust 2.4s ease-out infinite; }
+  .anim-blink  { animation: blink 1.4s steps(1) infinite; }
+
+  /* Aparecer al hacer scroll.
+     Ojo: el estado oculto lo activa el JavaScript (clase .reveal-listo).
+     Así, si el JS falla o el navegador es viejo, el contenido se ve igual:
+     una invitación nunca debe quedarse en blanco. */
+  .reveal-listo {
+    opacity: 0; transform: translateY(28px);
+    transition: opacity .6s ease, transform .6s ease;
+  }
+  .reveal-listo.shown { opacity: 1; transform: none; }
+
+  /* Respeta a quien prefiere menos movimiento (mareos, accesibilidad) */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .anim-dig, .anim-bump, .anim-drive, .anim-wheel, .anim-dust, .anim-blink {
+      animation: none !important;
+    }
+    .reveal-listo { opacity: 1; transform: none; transition: none; }
+  }
+
+  /* Carrusel de fotos con desplazamiento suave y magnético */
+  .snap-row {
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .snap-row::-webkit-scrollbar { display: none; }
+  .snap-row > * { scroll-snap-align: center; }
+</style>
+</head>
+
+<body class="font-body antialiased">
+
+<!-- ══════════════ CINTA SUPERIOR ══════════════ -->
+<div class="hazard h-5 w-full" role="presentation"></div>
+
+<!-- ══════════════ PORTADA ══════════════ -->
+<header class="relative px-5 pt-10 pb-14 text-center overflow-hidden">
+
+  <!-- Máquinas que cruzan el fondo, a distintas velocidades -->
+  <div class="pointer-events-none absolute bottom-2 left-0 w-full opacity-25" aria-hidden="true">
+    <div class="anim-drive w-40">
+      <svg viewBox="0 0 200 110" class="w-full">
+        <rect x="8" y="34" width="86" height="42" rx="6" fill="#FFCD11"/>
+        <path d="M94 46h44l24 30H94z" fill="#FFCD11"/>
+        <rect x="104" y="52" width="26" height="18" rx="3" fill="#141414"/>
+        <circle class="anim-wheel" cx="46" cy="86" r="17" fill="#141414"/>
+        <circle class="anim-wheel" cx="140" cy="86" r="17" fill="#141414"/>
+        <circle cx="46" cy="86" r="6" fill="#7a7a7a"/>
+        <circle cx="140" cy="86" r="6" fill="#7a7a7a"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="pointer-events-none absolute bottom-24 left-0 w-full opacity-[0.14]" aria-hidden="true">
+    <!-- Excavadora sobre orugas, más lenta y al fondo -->
+    <div class="anim-drive w-32" style="animation-duration:22s; animation-delay:-7s">
+      <svg viewBox="0 0 200 120" class="w-full">
+        <rect x="70" y="46" width="66" height="13" rx="6" fill="#FFCD11" transform="rotate(-34 76 54)"/>
+        <path d="M120 22l30 22-11 14-30-22z" fill="#FFCD11"/>
+        <rect x="30" y="52" width="66" height="40" rx="7" fill="#FFCD11"/>
+        <rect x="40" y="60" width="26" height="20" rx="4" fill="#141414"/>
+        <rect x="22" y="92" width="92" height="22" rx="11" fill="#141414"/>
+        <circle class="anim-wheel" cx="42" cy="103" r="7" fill="#5a5a5a"/>
+        <circle class="anim-wheel" cx="94" cy="103" r="7" fill="#5a5a5a"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Cartel de obra -->
+  <div class="relative mx-auto max-w-md">
+    <p class="inline-block bg-alert text-white font-sign text-xs sm:text-sm tracking-wider px-4 py-2 rounded-md -rotate-2 shadow-lg">
+      ⚠ ZONA DE CONSTRUCCIÓN ⚠
+    </p>
+
+    <!-- Foto principal dentro de un marco tipo señal vial -->
+    <div class="mt-7 mx-auto w-52 h-52 sm:w-60 sm:h-60 relative">
+      <div class="absolute inset-0 rounded-full hazard p-[10px] shadow-2xl">
+        <div class="w-full h-full rounded-full bg-ink2 overflow-hidden border-4 border-ink">
+          <img id="fotoPrincipal"
+               src="fotos/hero.jpg"
+               alt="Foto de Thiago, el cumpleañero"
+               class="w-full h-full object-cover">
+        </div>
+      </div>
+      <!-- Insignia de edad -->
+      <div class="absolute -bottom-3 -right-2 w-20 h-20 rounded-full bg-cat border-4 border-ink
+                  grid place-items-center shadow-xl anim-bump">
+        <span id="insigniaEdad" class="font-sign text-ink text-4xl leading-none">3</span>
+      </div>
+    </div>
+
+    <h1 class="mt-9 font-sign uppercase text-cat text-5xl sm:text-6xl leading-none drop-shadow-[0_4px_0_rgba(0,0,0,.6)]">
+      <span id="nombreHero">THIAGO</span>
+    </h1>
+    <p class="mt-4 font-sign text-2xl sm:text-3xl text-white">
+      ¡CUMPLE <span id="edadHero">3</span> AÑOS!
+    </p>
+    <p class="mt-4 text-lg text-white/70 max-w-sm mx-auto">
+      Ponte el casco y acompáñanos a celebrar. ¡Se busca personal para la fiesta!
+    </p>
+
+    <a href="#confirmar"
+       class="btn-3d mt-8 inline-block bg-cat hover:bg-catd text-ink font-sign text-lg
+              px-9 py-5 rounded-2xl border-4 border-ink"
+       style="--btn-shadow:#8a6f00">
+      CONFIRMAR ASISTENCIA
+    </a>
+  </div>
+</header>
+
+<div class="hazard-thin h-4 w-full" role="presentation"></div>
+
+<!-- ══════════════ CUENTA REGRESIVA ══════════════ -->
+<section class="px-5 py-12 reveal" aria-labelledby="tituloCuenta">
+  <div class="mx-auto max-w-md text-center">
+    <h2 id="tituloCuenta" class="font-sign text-cat text-2xl sm:text-3xl">FALTA POCO</h2>
+
+    <div id="cuentaRegresiva" class="mt-6 grid grid-cols-4 gap-2 sm:gap-3">
+      <!-- Generado por JavaScript -->
+    </div>
+
+    <p id="cuentaMensaje" class="mt-5 font-sign text-xl text-alert hidden"></p>
+  </div>
+</section>
+
+<!-- ══════════════ DATOS DE LA FIESTA ══════════════ -->
+<section class="px-5 pb-12" aria-labelledby="tituloDatos">
+  <div class="mx-auto max-w-md">
+    <h2 id="tituloDatos" class="font-sign text-cat text-2xl sm:text-3xl text-center reveal">
+      ORDEN DE TRABAJO
+    </h2>
+
+    <div class="mt-7 space-y-4">
+
+      <!-- Fecha -->
+      <div class="reveal plate bolted rounded-2xl border-4 border-cat p-5 pt-8 flex gap-4 items-start">
+        <span class="text-4xl shrink-0" aria-hidden="true">📅</span>
+        <div>
+          <p class="font-sign text-cat text-sm tracking-wide">FECHA</p>
+          <p id="datoFecha" class="mt-1 text-xl font-extrabold text-white leading-snug"></p>
+        </div>
+      </div>
+
+      <!-- Hora -->
+      <div class="reveal plate bolted rounded-2xl border-4 border-cat p-5 pt-8 flex gap-4 items-start">
+        <span class="text-4xl shrink-0" aria-hidden="true">⏰</span>
+        <div>
+          <p class="font-sign text-cat text-sm tracking-wide">HORA</p>
+          <p id="datoHora" class="mt-1 text-xl font-extrabold text-white leading-snug"></p>
+        </div>
+      </div>
+
+      <!-- Lugar + mapa -->
+      <div class="reveal plate bolted rounded-2xl border-4 border-cat p-5 pt-8">
+        <div class="flex gap-4 items-start">
+          <span class="text-4xl shrink-0" aria-hidden="true">📍</span>
+          <div>
+            <p class="font-sign text-cat text-sm tracking-wide">LUGAR</p>
+            <p id="datoLugar" class="mt-1 text-xl font-extrabold text-white leading-snug"></p>
+            <p id="datoDireccion" class="mt-1 text-base text-white/70 leading-snug"></p>
+          </div>
+        </div>
+        <a id="btnWaze" href="#" target="_blank" rel="noopener"
+           class="btn-3d mt-5 flex items-center justify-center gap-2 bg-[#33CCFF]
+                  text-ink font-sign text-base px-6 py-5 rounded-xl border-4 border-ink"
+           style="--btn-shadow:#1a8fb3">
+          🚗 IR CON WAZE
+        </a>
+        <a id="btnMapa" href="#" target="_blank" rel="noopener"
+           class="btn-3d mt-3 flex items-center justify-center gap-2 bg-white hover:bg-gray-100
+                  text-ink font-sign text-base px-6 py-5 rounded-xl border-4 border-ink"
+           style="--btn-shadow:#8a8a8a">
+          🗺️ IR CON GOOGLE MAPS
+        </a>
+      </div>
+
+      <!-- Nota extra -->
+      <div class="reveal rounded-2xl border-4 border-dashed border-alert/70 bg-alert/10 p-5 text-center">
+        <p class="font-sign text-alert text-sm tracking-wide">AVISO DE OBRA</p>
+        <p id="datoNota" class="mt-2 text-base text-white/85 leading-relaxed"></p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ EXCAVADORA ══════════════ -->
+<section class="relative px-5 pb-4" aria-hidden="true">
+  <div class="mx-auto max-w-md relative h-44">
+
+    <!-- Polvo levantándose -->
+    <div class="absolute bottom-8 left-[24%] w-24 h-24 pointer-events-none">
+      <span class="anim-dust absolute bottom-0 left-0  w-4 h-4 rounded-full bg-dirt/70" style="--dx:-18px; animation-delay:0s"></span>
+      <span class="anim-dust absolute bottom-0 left-6  w-5 h-5 rounded-full bg-dirt/60" style="--dx:12px;  animation-delay:.6s"></span>
+      <span class="anim-dust absolute bottom-0 left-12 w-3 h-3 rounded-full bg-dirt/70" style="--dx:24px;  animation-delay:1.2s"></span>
+      <span class="anim-dust absolute bottom-0 left-16 w-4 h-4 rounded-full bg-dirt/50" style="--dx:-8px;  animation-delay:1.8s"></span>
+    </div>
+
+    <svg viewBox="0 0 260 160" class="relative w-full h-full">
+      <!-- Montículo de tierra -->
+      <path d="M0 148c26-18 54-24 84-16 26 7 40 16 66 16h110v12H0z" fill="#8B5E34"/>
+      <path d="M12 148c22-12 44-16 66-10" stroke="#6d4926" stroke-width="4" fill="none" stroke-linecap="round"/>
+
+      <!-- Brazo + cuchara (animados) -->
+      <g class="anim-dig">
+        <rect x="70" y="88" width="76" height="15" rx="7" fill="#FFCD11" stroke="#141414" stroke-width="4"
+              transform="rotate(-32 78 96)"/>
+        <path d="M128 44l38 26-12 16-38-26z" fill="#FFCD11" stroke="#141414" stroke-width="4"/>
+        <path d="M160 66l22 14-4 20-26-16z" fill="#E5B300" stroke="#141414" stroke-width="4" stroke-linejoin="round"/>
+      </g>
+
+      <!-- Cabina -->
+      <g class="anim-bump">
+        <rect x="34" y="76" width="78" height="46" rx="8" fill="#FFCD11" stroke="#141414" stroke-width="5"/>
+        <rect x="46" y="86" width="30" height="24" rx="4" fill="#141414"/>
+        <circle class="anim-blink" cx="104" cy="86" r="5" fill="#FF6B00"/>
+      </g>
+
+      <!-- Orugas -->
+      <rect x="24" y="122" width="104" height="26" rx="13" fill="#141414" stroke="#3d3d3d" stroke-width="3"/>
+      <circle class="anim-wheel" cx="44"  cy="135" r="8" fill="#5a5a5a"/>
+      <circle class="anim-wheel" cx="76"  cy="135" r="8" fill="#5a5a5a"/>
+      <circle class="anim-wheel" cx="108" cy="135" r="8" fill="#5a5a5a"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ══════════════ FLOTA DE MÁQUINAS ══════════════ -->
+<section class="pb-14" aria-labelledby="tituloFlota">
+  <h2 id="tituloFlota" class="px-5 font-sign text-cat text-2xl sm:text-3xl text-center reveal">
+    NUESTRA FLOTA
+  </h2>
+  <p class="mt-3 px-5 text-center text-white/60 reveal">
+    Toca una máquina para que salude 👋
+  </p>
+
+  <div id="flota" class="snap-row mt-7 flex gap-4 overflow-x-auto px-5 pb-3">
+
+    <!-- ── Excavadora ── -->
+    <button type="button" class="maquina shrink-0 w-56 plate rounded-2xl border-4 border-cat p-4 text-center">
+      <svg viewBox="0 0 200 150" class="w-full h-32" aria-hidden="true">
+        <g class="anim-dig" style="transform-origin:62px 92px">
+          <rect x="56" y="84" width="70" height="14" rx="7" fill="#FFCD11" stroke="#141414" stroke-width="5"
+                transform="rotate(-34 62 92)"/>
+          <path d="M108 38l34 24-12 15-34-24z" fill="#FFCD11" stroke="#141414" stroke-width="5"/>
+          <path d="M136 58l22 14-5 20-25-16z" fill="#E5B300" stroke="#141414" stroke-width="5" stroke-linejoin="round"/>
+        </g>
+        <g class="anim-bump">
+          <rect x="24" y="72" width="72" height="44" rx="8" fill="#FFCD11" stroke="#141414" stroke-width="5"/>
+          <rect x="36" y="82" width="28" height="22" rx="4" fill="#141414"/>
+          <circle class="anim-blink" cx="88" cy="82" r="5" fill="#FF6B00"/>
+        </g>
+        <rect x="16" y="116" width="98" height="24" rx="12" fill="#141414" stroke="#4a4a4a" stroke-width="3"/>
+        <circle class="anim-wheel" cx="36" cy="128" r="7" fill="#5a5a5a"/>
+        <circle class="anim-wheel" cx="66" cy="128" r="7" fill="#5a5a5a"/>
+        <circle class="anim-wheel" cx="96" cy="128" r="7" fill="#5a5a5a"/>
+      </svg>
+      <p class="mt-2 font-sign text-cat text-sm">EXCAVADORA</p>
+    </button>
+
+    <!-- ── Camión de volteo ── -->
+    <button type="button" class="maquina shrink-0 w-56 plate rounded-2xl border-4 border-cat p-4 text-center">
+      <svg viewBox="0 0 200 150" class="w-full h-32" aria-hidden="true">
+        <!-- Tierra que cae al descargar -->
+        <circle cx="30" cy="118" r="7" fill="#8B5E34" opacity=".8"/>
+        <circle cx="46" cy="124" r="9" fill="#8B5E34" opacity=".8"/>
+        <circle cx="18" cy="126" r="6" fill="#6d4926" opacity=".8"/>
+        <!-- Batea que se levanta -->
+        <g class="anim-tip">
+          <path d="M28 56h94v40H28z" fill="#FFCD11" stroke="#141414" stroke-width="5" stroke-linejoin="round"/>
+          <path d="M40 66h70M40 78h70" stroke="#E5B300" stroke-width="5" stroke-linecap="round"/>
+        </g>
+        <!-- Cabina -->
+        <path d="M126 62h30l22 34h-52z" fill="#FFCD11" stroke="#141414" stroke-width="5" stroke-linejoin="round"/>
+        <rect x="134" y="70" width="24" height="17" rx="3" fill="#141414"/>
+        <!-- Chasis -->
+        <rect x="24" y="96" width="156" height="14" rx="5" fill="#141414"/>
+        <circle class="anim-wheel" cx="56"  cy="120" r="18" fill="#141414"/>
+        <circle class="anim-wheel" cx="150" cy="120" r="18" fill="#141414"/>
+        <circle cx="56"  cy="120" r="7" fill="#7a7a7a"/>
+        <circle cx="150" cy="120" r="7" fill="#7a7a7a"/>
+      </svg>
+      <p class="mt-2 font-sign text-cat text-sm">CAMIÓN DE VOLTEO</p>
+    </button>
+
+    <!-- ── Bulldozer ── -->
+    <button type="button" class="maquina shrink-0 w-56 plate rounded-2xl border-4 border-cat p-4 text-center">
+      <svg viewBox="0 0 200 150" class="w-full h-32" aria-hidden="true">
+        <!-- Montículo que empuja -->
+        <path d="M8 132c10-16 22-22 34-20v20z" fill="#8B5E34"/>
+        <!-- Cuchilla -->
+        <g class="anim-push">
+          <path d="M30 74h18v58H30z" fill="#E5B300" stroke="#141414" stroke-width="5" stroke-linejoin="round"/>
+          <path d="M48 96l34-10" stroke="#141414" stroke-width="7" stroke-linecap="round"/>
+        </g>
+        <!-- Cuerpo y cabina -->
+        <g class="anim-bump">
+          <rect x="70" y="76" width="92" height="34" rx="7" fill="#FFCD11" stroke="#141414" stroke-width="5"/>
+          <path d="M96 46h44v30H96z" fill="#FFCD11" stroke="#141414" stroke-width="5" stroke-linejoin="round"/>
+          <rect x="104" y="54" width="28" height="16" rx="3" fill="#141414"/>
+          <rect x="150" y="42" width="12" height="34" rx="5" fill="#141414"/>
+        </g>
+        <!-- Orugas -->
+        <rect x="62" y="110" width="112" height="26" rx="13" fill="#141414" stroke="#4a4a4a" stroke-width="3"/>
+        <circle class="anim-wheel" cx="82"  cy="123" r="8" fill="#5a5a5a"/>
+        <circle class="anim-wheel" cx="118" cy="123" r="8" fill="#5a5a5a"/>
+        <circle class="anim-wheel" cx="154" cy="123" r="8" fill="#5a5a5a"/>
+      </svg>
+      <p class="mt-2 font-sign text-cat text-sm">BULLDOZER</p>
+    </button>
+
+    <!-- ── Grúa ── -->
+    <button type="button" class="maquina shrink-0 w-56 plate rounded-2xl border-4 border-cat p-4 text-center">
+      <svg viewBox="0 0 200 150" class="w-full h-32" aria-hidden="true">
+        <!-- Pluma y torre -->
+        <path d="M56 30h108v14H56z" fill="#FFCD11" stroke="#141414" stroke-width="5" stroke-linejoin="round"/>
+        <path d="M62 44l24-14M92 44l24-14M122 44l24-14" stroke="#141414" stroke-width="4"/>
+        <rect x="60" y="30" width="18" height="66" fill="#FFCD11" stroke="#141414" stroke-width="5"/>
+        <!-- Cable y gancho balanceándose -->
+        <g class="anim-swing" style="transform-origin:146px 44px">
+          <line x1="146" y1="44" x2="146" y2="92" stroke="#141414" stroke-width="4"/>
+          <path d="M138 92h16v14a8 8 0 0 1-16 0z" fill="#E5B300" stroke="#141414" stroke-width="5" stroke-linejoin="round"/>
+        </g>
+        <!-- Base -->
+        <rect x="40" y="96" width="86" height="26" rx="7" fill="#FFCD11" stroke="#141414" stroke-width="5"/>
+        <rect x="52" y="104" width="24" height="14" rx="3" fill="#141414"/>
+        <circle class="anim-wheel" cx="60"  cy="130" r="14" fill="#141414"/>
+        <circle class="anim-wheel" cx="106" cy="130" r="14" fill="#141414"/>
+        <circle cx="60"  cy="130" r="5" fill="#7a7a7a"/>
+        <circle cx="106" cy="130" r="5" fill="#7a7a7a"/>
+      </svg>
+      <p class="mt-2 font-sign text-cat text-sm">GRÚA</p>
+    </button>
+
+    <!-- ── Mezcladora ── -->
+    <button type="button" class="maquina shrink-0 w-56 plate rounded-2xl border-4 border-cat p-4 text-center">
+      <svg viewBox="0 0 200 150" class="w-full h-32" aria-hidden="true">
+        <!-- Bombo girando -->
+        <g class="anim-mix" style="transform-origin:76px 74px">
+          <ellipse cx="76" cy="74" rx="48" ry="34" fill="#FFCD11" stroke="#141414" stroke-width="5"/>
+          <path d="M40 56c22 10 46 10 70 0M40 92c22-10 46-10 70 0" stroke="#141414" stroke-width="4" fill="none"/>
+        </g>
+        <!-- Canaleta -->
+        <path d="M120 82l30 22-8 10-30-22z" fill="#E5B300" stroke="#141414" stroke-width="5" stroke-linejoin="round"/>
+        <!-- Cabina -->
+        <path d="M140 58h26l16 30h-42z" fill="#FFCD11" stroke="#141414" stroke-width="5" stroke-linejoin="round"/>
+        <rect x="146" y="65" width="20" height="15" rx="3" fill="#141414"/>
+        <!-- Chasis -->
+        <rect x="30" y="98" width="152" height="12" rx="5" fill="#141414"/>
+        <circle class="anim-wheel" cx="58"  cy="122" r="16" fill="#141414"/>
+        <circle class="anim-wheel" cx="152" cy="122" r="16" fill="#141414"/>
+        <circle cx="58"  cy="122" r="6" fill="#7a7a7a"/>
+        <circle cx="152" cy="122" r="6" fill="#7a7a7a"/>
+      </svg>
+      <p class="mt-2 font-sign text-cat text-sm">MEZCLADORA</p>
+    </button>
+
+    <!-- ── Rodillo compactador ── -->
+    <button type="button" class="maquina shrink-0 w-56 plate rounded-2xl border-4 border-cat p-4 text-center">
+      <svg viewBox="0 0 200 150" class="w-full h-32" aria-hidden="true">
+        <g class="anim-bump">
+          <rect x="72" y="62" width="76" height="40" rx="8" fill="#FFCD11" stroke="#141414" stroke-width="5"/>
+          <path d="M92 32h40v30H92z" fill="#FFCD11" stroke="#141414" stroke-width="5" stroke-linejoin="round"/>
+          <rect x="100" y="40" width="24" height="15" rx="3" fill="#141414"/>
+        </g>
+        <!-- Rodillo grande adelante -->
+        <circle class="anim-wheel" cx="48" cy="106" r="34" fill="#141414" stroke="#5a5a5a" stroke-width="4"/>
+        <path d="M48 72v68M14 106h68" stroke="#5a5a5a" stroke-width="4"/>
+        <circle cx="48" cy="106" r="9" fill="#7a7a7a"/>
+        <!-- Rueda trasera -->
+        <circle class="anim-wheel" cx="146" cy="118" r="22" fill="#141414"/>
+        <circle cx="146" cy="118" r="8" fill="#7a7a7a"/>
+        <!-- Suelo aplanado -->
+        <path d="M0 142h200" stroke="#8B5E34" stroke-width="8" stroke-linecap="round"/>
+      </svg>
+      <p class="mt-2 font-sign text-cat text-sm">COMPACTADORA</p>
+    </button>
+
+  </div>
+  <p class="mt-1 text-center text-sm text-white/40">Desliza para ver toda la flota →</p>
+</section>
+
+<!-- ══════════════ FOTO DESTACADA ══════════════ -->
+<section class="px-5 pb-14" aria-labelledby="tituloGaleria">
+  <div class="mx-auto max-w-md">
+
+    <h2 id="tituloGaleria" class="font-sign text-cat text-2xl sm:text-3xl text-center reveal">
+      EL JEFE DE OBRA
+    </h2>
+    <p class="mt-3 text-center text-white/60 reveal">
+      Con ustedes, el encargado de la fiesta 👷
+    </p>
+
+    <!-- Marco tipo cartel de obra, con cinta arriba y abajo -->
+    <figure class="reveal mt-7 rounded-3xl overflow-hidden border-4 border-cat shadow-2xl bg-ink2">
+      <div class="hazard-thin h-3" role="presentation"></div>
+      <img id="fotoDestacada" src="fotos/thiago.jpg" alt="" loading="lazy"
+           class="w-full block">
+      <div class="hazard-thin h-3" role="presentation"></div>
+      <figcaption id="pieFoto"
+                  class="px-5 py-4 text-center font-sign text-cat text-base uppercase">
+      </figcaption>
+    </figure>
+
+  </div>
+</section>
+
+<div class="hazard-thin h-4 w-full" role="presentation"></div>
+
+<!-- ══════════════ CONFIRMACIÓN ══════════════ -->
+<section id="confirmar" class="px-5 py-14 scroll-mt-4" aria-labelledby="tituloRsvp">
+  <div class="mx-auto max-w-md">
+
+    <h2 id="tituloRsvp" class="font-sign text-cat text-2xl sm:text-3xl text-center reveal">
+      ¿CUENTAS CON NOSOTROS?
+    </h2>
+    <p class="mt-3 text-center text-white/70 reveal">
+      Solo toma 20 segundos. Nos ayuda muchísimo a preparar todo.
+    </p>
+
+    <!-- ── Formulario ── -->
+    <form id="formRsvp" class="mt-8 plate rounded-3xl border-4 border-cat p-6 space-y-7 reveal" novalidate>
+
+      <!-- Nombre -->
+      <div>
+        <label for="campoNombre" class="block font-sign text-cat text-sm tracking-wide">
+          ¿CÓMO TE ANOTAMOS?
+        </label>
+        <p id="ayudaNombre" class="mt-1 text-sm text-white/60"></p>
+        <input id="campoNombre" name="nombre" type="text" autocomplete="name" required
+               aria-describedby="ayudaNombre"
+               placeholder="Escribe tu nombre aquí"
+               class="mt-3 w-full rounded-xl border-4 border-ink bg-white px-4 py-4
+                      text-lg text-ink placeholder-gray-400 font-semibold">
+        <p id="errorNombre" class="mt-2 text-alert font-bold hidden">Por favor escribe tu nombre.</p>
+      </div>
+
+      <!-- Asistencia: dos botones grandes -->
+      <div role="group" aria-labelledby="etiquetaAsistencia">
+        <p id="etiquetaAsistencia" class="font-sign text-cat text-sm tracking-wide">¿VIENES?</p>
+        <div class="mt-3 grid grid-cols-2 gap-3">
+          <button type="button" data-asistencia="si" aria-pressed="false"
+                  class="btn-asistencia btn-3d rounded-xl border-4 border-ink bg-white text-ink
+                         font-sign text-base py-6 leading-tight"
+                  style="--btn-shadow:#8a8a8a">
+            ✅<br>SÍ, ALLÍ<br>ESTARÉ
+          </button>
+          <button type="button" data-asistencia="no" aria-pressed="false"
+                  class="btn-asistencia btn-3d rounded-xl border-4 border-ink bg-white text-ink
+                         font-sign text-base py-6 leading-tight"
+                  style="--btn-shadow:#8a8a8a">
+            😔<br>NO PODRÉ<br>IR
+          </button>
+        </div>
+        <p id="errorAsistencia" class="mt-2 text-alert font-bold hidden">Elige una de las dos opciones.</p>
+      </div>
+
+      <!-- Acompañantes: se oculta si la respuesta es "no" -->
+      <div id="bloqueCantidad" class="hidden">
+        <p class="font-sign text-cat text-sm tracking-wide">¿CUÁNTOS ACOMPAÑANTES VIENEN?</p>
+        <p class="mt-1 text-sm text-white/60">
+          Sin contarte a ti. Cuenta esposo, esposa, niños y quien te acompañe.
+        </p>
+        <div class="mt-4 flex items-center justify-center gap-5">
+          <button type="button" id="btnMenos" aria-label="Quitar un acompañante"
+                  class="btn-3d w-16 h-16 rounded-full border-4 border-ink bg-white
+                         text-ink font-sign text-2xl" style="--btn-shadow:#8a8a8a">−</button>
+          <output id="salidaCantidad" for="btnMenos btnMas"
+                  class="font-sign text-cat text-5xl w-20 text-center tabular-nums">0</output>
+          <button type="button" id="btnMas" aria-label="Agregar un acompañante"
+                  class="btn-3d w-16 h-16 rounded-full border-4 border-ink bg-cat
+                         text-ink font-sign text-2xl" style="--btn-shadow:#8a6f00">+</button>
+        </div>
+        <p id="totalPersonas" class="mt-4 text-center text-base text-white/70"></p>
+      </div>
+
+      <!-- Mensaje opcional -->
+      <div>
+        <label for="campoMensaje" class="block font-sign text-cat text-sm tracking-wide">
+          MENSAJE <span class="font-body font-normal text-white/50 normal-case">(opcional)</span>
+        </label>
+        <textarea id="campoMensaje" name="mensaje" rows="3"
+                  placeholder="Alguna alergia, si llegas tarde, o un saludo para el cumpleañero…"
+                  class="mt-3 w-full rounded-xl border-4 border-ink bg-white px-4 py-4
+                         text-lg text-ink placeholder-gray-400 font-semibold resize-none"></textarea>
+      </div>
+
+      <!-- Enviar -->
+      <button type="submit" id="btnEnviar"
+              class="btn-3d w-full bg-cat hover:bg-catd text-ink font-sign text-lg
+                     px-6 py-6 rounded-2xl border-4 border-ink"
+              style="--btn-shadow:#8a6f00">
+        ENVIAR CONFIRMACIÓN
+      </button>
+
+      <p class="text-center text-sm text-white/50">
+        ¿Prefieres escribirnos?
+        <a id="enlaceWhatsAppForm" href="#" target="_blank" rel="noopener"
+           class="text-cat font-bold underline underline-offset-4">Mándanos un WhatsApp</a>
+      </p>
+    </form>
+
+    <!-- ── Confirmación enviada ── -->
+    <div id="panelExito" class="hidden mt-8 rounded-3xl border-4 border-cat bg-cat/10 p-8 text-center">
+      <div class="text-6xl" aria-hidden="true">🎉</div>
+      <h3 class="mt-4 font-sign text-cat text-2xl">¡LISTO!</h3>
+      <p id="textoExito" class="mt-3 text-lg text-white/85 leading-relaxed"></p>
+
+      <a id="enlaceWhatsAppExito" href="#" target="_blank" rel="noopener"
+         class="btn-3d mt-7 inline-flex items-center justify-center gap-2 bg-[#25D366]
+                text-white font-sign text-base px-7 py-4 rounded-xl border-4 border-ink"
+         style="--btn-shadow:#128C4A">
+        AVISAR TAMBIÉN POR WHATSAPP
+      </a>
+
+      <button type="button" id="btnCorregir"
+              class="mt-5 block mx-auto text-white/60 underline underline-offset-4 text-base">
+        Me equivoqué, quiero cambiar mi respuesta
+      </button>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════ PIE ══════════════ -->
+<footer class="px-5 py-10 text-center border-t-4 border-ink2">
+
+  <!-- Bulldozer emparejando el terreno -->
+  <div class="mx-auto max-w-xs mb-6" aria-hidden="true">
+    <svg viewBox="0 0 200 140" class="w-full">
+      <path d="M0 128c14-20 30-28 46-24v24z" fill="#8B5E34"/>
+      <g class="anim-push">
+        <path d="M28 68h18v58H28z" fill="#E5B300" stroke="#141414" stroke-width="5" stroke-linejoin="round"/>
+        <path d="M46 92l34-10" stroke="#141414" stroke-width="7" stroke-linecap="round"/>
+      </g>
+      <g class="anim-bump">
+        <rect x="68" y="72" width="94" height="34" rx="7" fill="#FFCD11" stroke="#141414" stroke-width="5"/>
+        <path d="M94 42h46v30H94z" fill="#FFCD11" stroke="#141414" stroke-width="5" stroke-linejoin="round"/>
+        <rect x="102" y="50" width="30" height="16" rx="3" fill="#141414"/>
+        <rect x="150" y="38" width="12" height="34" rx="5" fill="#141414"/>
+        <circle class="anim-blink" cx="86" cy="82" r="4" fill="#FF6B00"/>
+      </g>
+      <rect x="60" y="106" width="114" height="26" rx="13" fill="#141414" stroke="#4a4a4a" stroke-width="3"/>
+      <circle class="anim-wheel" cx="80"  cy="119" r="8" fill="#5a5a5a"/>
+      <circle class="anim-wheel" cx="117" cy="119" r="8" fill="#5a5a5a"/>
+      <circle class="anim-wheel" cx="154" cy="119" r="8" fill="#5a5a5a"/>
+    </svg>
+  </div>
+
+  <p class="font-sign text-cat text-xl">¡TE ESPERAMOS!</p>
+  <p id="piePregunta" class="mt-3 text-white/60">
+    ¿Alguna duda? Escríbenos por WhatsApp.
+  </p>
+  <a id="enlaceWhatsAppPie" href="#" target="_blank" rel="noopener"
+     class="btn-3d mt-5 inline-block bg-[#25D366] text-white font-sign text-base
+            px-7 py-4 rounded-xl border-4 border-ink"
+     style="--btn-shadow:#128C4A">
+    💬 ESCRIBIR POR WHATSAPP
+  </a>
+</footer>
+
+<div class="hazard h-5 w-full" role="presentation"></div>
+
+
+<script>
+/* ══════════════════════════════════════════════════════════════════
+   ⚙️  CONFIGURACIÓN — CAMBIA SOLO ESTO
+   Todo lo de abajo se acomoda solo. No hace falta tocar el diseño.
+   ══════════════════════════════════════════════════════════════════ */
+const CONFIG = {
+
+  // ── El cumpleañero ────────────────────────────────────────────
+  // Escríbelo normal (así se lee bien en los mensajes de agradecimiento).
+  // En la portada se muestra en mayúsculas automáticamente.
+  nombre: 'Thiago',
+  edad: 3,
+
+  // ── Fecha y hora del evento ───────────────────────────────────
+  // Formato: 'AAAA-MM-DDTHH:MM:SS'  (usa reloj de 24 h)
+  fechaISO: '2026-09-06T09:00:00',
+
+  // Cómo se muestra en pantalla (escríbelo bonito, como quieras)
+  fechaTexto: 'Domingo 6 de septiembre de 2026',
+  horaTexto:  'A partir de las 9:00 de la mañana',
+
+  // ── Lugar ─────────────────────────────────────────────────────
+  lugar: 'Condominio Loma Verde',
+  direccion: 'Grecia, Alajuela',
+  // Enlace de Waze (el botón principal, es lo que más se usa en CR)
+  wazeUrl: 'https://ul.waze.com/ul?place=ChIJcXRXQqZZoI8REUnC3_9t_Vw&ll=10.07236800%2C-84.32429280&navigate=yes&utm_campaign=default&utm_source=waze_website&utm_medium=lm_share_location',
+  // Enlace de Google Maps. Si lo dejas vacío se arma solo con las
+  // coordenadas de abajo, o buscando el nombre del lugar.
+  mapaUrl: 'https://www.google.com/maps/search/?api=1&query=10.072368%2C-84.3242928',
+
+  // ── Aviso extra que aparece en el recuadro naranja ────────────
+  nota: 'Ven con ropa cómoda, ¡habrá zona de arena y juegos! Los cascos los ponemos nosotros.',
+
+  // ── WhatsApp de contacto ──────────────────────────────────────
+  // Número completo con código de país, SIN "+", espacios ni guiones.
+  whatsapp: '50663940021',
+
+  // ── Fotos ─────────────────────────────────────────────────────
+  // La principal va en el círculo de la portada: debe ser CUADRADA
+  // y con la cara bien centrada.
+  fotoPrincipal: {
+    archivo: 'fotos/hero.jpg',
+    texto: 'Thiago con casco de constructor, guiñando el ojo',
+  },
+  // La destacada aparece más abajo, en formato vertical.
+  fotoDestacada: {
+    archivo: 'fotos/thiago.jpg',
+    texto: 'Thiago con chaleco reflectivo frente a una excavadora',
+  },
+
+  // ── Dónde se guardan las confirmaciones ───────────────────────
+  // Pega aquí la URL que te da Google al publicar el Apps Script.
+  // Mira las instrucciones en README.md (paso a paso, 5 minutos).
+  // Si la dejas vacía, el formulario funciona igual pero manda
+  // todo por WhatsApp en vez de guardarlo en la hoja.
+  scriptUrl: '',
+};
+
+/* ══════════════════════════════════════════════════════════════════
+   De aquí para abajo no necesitas cambiar nada.
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── Rellenar los textos de la página desde CONFIG ── */
+const $ = (sel) => document.querySelector(sel);
+
+document.title = `¡${CONFIG.nombre} cumple ${CONFIG.edad}! · Invitación`;
+$('#nombreHero').textContent   = CONFIG.nombre;
+$('#edadHero').textContent     = CONFIG.edad;
+$('#insigniaEdad').textContent = CONFIG.edad;
+$('#datoFecha').textContent    = CONFIG.fechaTexto;
+$('#datoHora').textContent     = CONFIG.horaTexto;
+$('#datoLugar').textContent    = CONFIG.lugar;
+$('#datoDireccion').textContent = CONFIG.direccion;
+$('#datoNota').textContent     = CONFIG.nota;
+
+// Mapas: usan el enlace propio si existe; si no, buscan la dirección.
+const busquedaLugar = encodeURIComponent(`${CONFIG.lugar} ${CONFIG.direccion}`);
+
+$('#btnMapa').href = CONFIG.mapaUrl
+  || 'https://www.google.com/maps/search/?api=1&query=' + busquedaLugar;
+
+// Si no hay enlace de Waze configurado, ocultamos ese botón en vez de
+// dejar uno que no lleve a ningún lado.
+if (CONFIG.wazeUrl) {
+  $('#btnWaze').href = CONFIG.wazeUrl;
+} else {
+  $('#btnWaze').remove();
+}
+
+/* ── Enlaces de WhatsApp ── */
+function enlaceWhatsApp(texto) {
+  return `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(texto)}`;
+}
+const saludoBase = `Hola 👋 Escribo por la invitación del cumpleaños de ${CONFIG.nombre}. `;
+$('#enlaceWhatsAppForm').href = enlaceWhatsApp(saludoBase);
+$('#enlaceWhatsAppPie').href  = enlaceWhatsApp(saludoBase + 'Tengo una pregunta: ');
+
+/* ── Fotos ── */
+const fotoPrincipal = $('#fotoPrincipal');
+fotoPrincipal.src = CONFIG.fotoPrincipal.archivo;
+fotoPrincipal.alt = CONFIG.fotoPrincipal.texto;
+
+const fotoDestacada = $('#fotoDestacada');
+fotoDestacada.src = CONFIG.fotoDestacada.archivo;
+fotoDestacada.alt = CONFIG.fotoDestacada.texto;
+
+$('#pieFoto').textContent = `${CONFIG.nombre} · ${CONFIG.edad} años de experiencia`;
+
+// Nadie tiene que poner su nombre "oficial": basta con cómo lo conoce el niño.
+$('#ayudaNombre').textContent =
+  `Escribe el nombre con el que ${CONFIG.nombre} te conoce, así como te dice él. `
+  + 'No hacen falta apellidos. 😊';
+
+// Si una foto no carga, mostramos un marcador en vez de un ícono roto.
+fotoPrincipal.addEventListener('error', () => {
+  fotoPrincipal.replaceWith(Object.assign(document.createElement('div'), {
+    className: 'w-full h-full grid place-items-center text-6xl',
+    textContent: '👷',
+  }));
+});
+
+fotoDestacada.addEventListener('error', () => {
+  fotoDestacada.replaceWith(Object.assign(document.createElement('div'), {
+    className: 'w-full aspect-[2/3] grid place-items-center text-center px-6 text-white/50',
+    innerHTML: '<div><div class="text-6xl">🚧</div>' +
+               '<p class="mt-4 font-bold">Falta la foto<br>' +
+               CONFIG.fotoDestacada.archivo + '</p></div>',
+  }));
+});
+
+/* ── Las máquinas saludan al tocarlas ── */
+const SALUDOS = ['¡BIP BIP!', '¡BRUM BRUM!', '¡HOLA!', '¡A TRABAJAR!', '¡PIII!', '¡VAMOS!'];
+
+document.querySelectorAll('.maquina').forEach((maquina, indice) => {
+  maquina.classList.add('relative');
+  // Cada máquina dice siempre lo mismo: a los niños les gusta anticiparlo.
+  const saludo = SALUDOS[indice % SALUDOS.length];
+  maquina.setAttribute('aria-label', `${maquina.textContent.trim()} — tócala para que salude`);
+
+  maquina.addEventListener('click', () => {
+    // Reiniciar la animación si la tocan varias veces seguidas
+    maquina.classList.remove('wiggle');
+    void maquina.offsetWidth;
+    maquina.classList.add('wiggle');
+
+    // Globo de diálogo, uno a la vez
+    maquina.querySelector('.globo')?.remove();
+    const globo = document.createElement('span');
+    globo.className = 'globo absolute top-2 right-2 bg-alert text-white font-sign ' +
+                      'text-xs px-3 py-2 rounded-lg rotate-3 shadow-lg pointer-events-none';
+    globo.textContent = saludo;
+    maquina.appendChild(globo);
+
+    setTimeout(() => globo.remove(), 1300);
+  });
+});
+
+/* ── Cuenta regresiva ── */
+const contenedorCuenta = $('#cuentaRegresiva');
+const unidades = [
+  { clave: 'dias',     etiqueta: 'DÍAS'  },
+  { clave: 'horas',    etiqueta: 'HORAS' },
+  { clave: 'minutos',  etiqueta: 'MIN'   },
+  { clave: 'segundos', etiqueta: 'SEG'   },
+];
+
+unidades.forEach(({ clave, etiqueta }) => {
+  contenedorCuenta.insertAdjacentHTML('beforeend', `
+    <div class="plate rounded-2xl border-4 border-cat py-4 px-1">
+      <p data-cuenta="${clave}" class="font-sign text-cat text-3xl sm:text-4xl tabular-nums leading-none">--</p>
+      <p class="mt-2 font-sign text-white/60 text-[10px] sm:text-xs tracking-wider">${etiqueta}</p>
+    </div>`);
+});
+
+const fechaEvento = new Date(CONFIG.fechaISO);
+
+function actualizarCuenta() {
+  const restante = fechaEvento - new Date();
+
+  if (isNaN(fechaEvento)) {
+    $('#cuentaMensaje').textContent = 'Revisa el formato de fechaISO en la configuración.';
+    $('#cuentaMensaje').classList.remove('hidden');
+    return true; // detener el reloj
+  }
+
+  if (restante <= 0) {
+    contenedorCuenta.classList.add('hidden');
+    $('#cuentaMensaje').textContent = '🎉 ¡HOY ES EL GRAN DÍA!';
+    $('#cuentaMensaje').classList.remove('hidden');
+    return true;
+  }
+
+  const seg = Math.floor(restante / 1000);
+  const valores = {
+    dias:     Math.floor(seg / 86400),
+    horas:    Math.floor(seg / 3600) % 24,
+    minutos:  Math.floor(seg / 60) % 60,
+    segundos: seg % 60,
+  };
+
+  for (const [clave, valor] of Object.entries(valores)) {
+    contenedorCuenta.querySelector(`[data-cuenta="${clave}"]`).textContent =
+      String(valor).padStart(2, '0');
+  }
+  return false;
+}
+
+if (!actualizarCuenta()) {
+  const reloj = setInterval(() => { if (actualizarCuenta()) clearInterval(reloj); }, 1000);
+}
+
+/* ── Aparecer al hacer scroll ──
+   Es puro adorno, así que está armado para fallar del lado seguro:
+   si algo no funciona, todo termina visible. */
+const porRevelar = [...document.querySelectorAll('.reveal')];
+
+function revelarTodo() {
+  porRevelar.forEach((el) => el.classList.add('shown'));
+}
+
+if ('IntersectionObserver' in window) {
+  // Recién aquí escondemos: si el JS no llegó hasta acá, nada se ocultó.
+  porRevelar.forEach((el) => el.classList.add('reveal-listo'));
+
+  const observador = new IntersectionObserver((entradas) => {
+    entradas.forEach((entrada) => {
+      if (entrada.isIntersecting) {
+        entrada.target.classList.add('shown');
+        observador.unobserve(entrada.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  porRevelar.forEach((el) => observador.observe(el));
+
+  // Red de seguridad: pase lo que pase, a los 4 segundos se ve todo.
+  setTimeout(revelarTodo, 4000);
+} else {
+  revelarTodo();
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   Formulario de confirmación
+   ══════════════════════════════════════════════════════════════════ */
+const formulario   = $('#formRsvp');
+const panelExito   = $('#panelExito');
+const botonEnviar  = $('#btnEnviar');
+const salidaCant   = $('#salidaCantidad');
+const bloqueCant   = $('#bloqueCantidad');
+
+let asistencia    = null;  // 'si' | 'no'
+let acompanantes  = 0;     // sin contar a quien llena el formulario
+
+/* Botones Sí / No */
+document.querySelectorAll('.btn-asistencia').forEach((boton) => {
+  boton.addEventListener('click', () => {
+    asistencia = boton.dataset.asistencia;
+
+    document.querySelectorAll('.btn-asistencia').forEach((otro) => {
+      const activo = otro === boton;
+      otro.setAttribute('aria-pressed', String(activo));
+      otro.classList.toggle('bg-cat', activo);
+      otro.classList.toggle('bg-white', !activo);
+      otro.style.setProperty('--btn-shadow', activo ? '#8a6f00' : '#8a8a8a');
+    });
+
+    // El contador de personas solo tiene sentido si viene
+    bloqueCant.classList.toggle('hidden', asistencia !== 'si');
+    $('#errorAsistencia').classList.add('hidden');
+  });
+});
+
+/* Contador de acompañantes */
+function pintarCantidad() {
+  salidaCant.textContent = acompanantes;
+
+  const total = acompanantes + 1;
+  $('#totalPersonas').textContent = acompanantes === 0
+    ? 'Vienes tú solo. ¡Igual nos alegra un montón!'
+    : `Total: ${total} personas (tú + ${acompanantes} ${acompanantes === 1 ? 'acompañante' : 'acompañantes'}).`;
+
+  // Los botones se apagan visualmente al llegar a los extremos
+  $('#btnMenos').disabled = acompanantes === 0;
+  $('#btnMenos').classList.toggle('opacity-40', acompanantes === 0);
+  $('#btnMas').disabled = acompanantes === 15;
+  $('#btnMas').classList.toggle('opacity-40', acompanantes === 15);
+}
+
+$('#btnMas').addEventListener('click', () => {
+  acompanantes = Math.min(acompanantes + 1, 15);
+  pintarCantidad();
+});
+$('#btnMenos').addEventListener('click', () => {
+  acompanantes = Math.max(acompanantes - 1, 0);
+  pintarCantidad();
+});
+
+/* Mensaje que se manda por WhatsApp según la respuesta */
+function mensajeWhatsApp(datos) {
+  if (datos.asistencia === 'si') {
+    const total = datos.acompanantes + 1;
+    return `¡Hola! Soy ${datos.nombre}. ✅ Confirmo asistencia al cumpleaños de ${CONFIG.nombre}. `
+         + (datos.acompanantes === 0
+              ? 'Voy solo (1 persona).'
+              : `Somos ${total} personas (yo + ${datos.acompanantes} ${datos.acompanantes === 1 ? 'acompañante' : 'acompañantes'}).`)
+         + (datos.mensaje ? ` Nota: ${datos.mensaje}` : '');
+  }
+  return `¡Hola! Soy ${datos.nombre}. 😔 Lamentablemente no podré ir al cumpleaños de ${CONFIG.nombre}.`
+       + (datos.mensaje ? ` ${datos.mensaje}` : '');
+}
+
+/* Guardar en Google Sheets.
+   Usamos "no-cors" porque Apps Script no devuelve cabeceras CORS:
+   el envío llega igual, pero el navegador no nos deja leer la respuesta. */
+async function guardarEnHoja(datos) {
+  if (!CONFIG.scriptUrl) return false;
+
+  const viene = datos.asistencia === 'si';
+
+  const cuerpo = new URLSearchParams({
+    nombre:       datos.nombre,
+    asistencia:   viene ? 'Sí' : 'No',
+    acompanantes: viene ? datos.acompanantes : 0,
+    total:        viene ? datos.acompanantes + 1 : 0,
+    mensaje:      datos.mensaje,
+    fecha:        new Date().toLocaleString('es-CR'),
+  });
+
+  await fetch(CONFIG.scriptUrl, { method: 'POST', mode: 'no-cors', body: cuerpo });
+  return true;
+}
+
+formulario.addEventListener('submit', async (evento) => {
+  evento.preventDefault();
+
+  const nombre  = $('#campoNombre').value.trim();
+  const mensaje = $('#campoMensaje').value.trim();
+
+  // Validación con mensajes claros junto a cada campo
+  let valido = true;
+  $('#errorNombre').classList.toggle('hidden', !!nombre);
+  if (!nombre) { valido = false; $('#campoNombre').focus(); }
+
+  $('#errorAsistencia').classList.toggle('hidden', !!asistencia);
+  if (!asistencia) valido = false;
+
+  if (!valido) return;
+
+  const datos = { nombre, asistencia, acompanantes, mensaje };
+
+  botonEnviar.disabled = true;
+  botonEnviar.textContent = 'ENVIANDO…';
+  botonEnviar.classList.add('opacity-70');
+
+  let guardado = false;
+  try {
+    guardado = await guardarEnHoja(datos);
+  } catch (error) {
+    // Sin internet o script mal configurado: seguimos con WhatsApp.
+    console.warn('No se pudo guardar en la hoja:', error);
+  }
+
+  // Copia local por si acaso: así podemos recuperar la respuesta.
+  try {
+    localStorage.setItem('rsvp', JSON.stringify({ ...datos, guardado, ts: Date.now() }));
+  } catch (_) { /* modo privado del navegador */ }
+
+  // Mostrar el panel de agradecimiento
+  const textoWhats = mensajeWhatsApp(datos);
+  $('#enlaceWhatsAppExito').href = enlaceWhatsApp(textoWhats);
+
+  const total = acompanantes + 1;
+  $('#textoExito').textContent = asistencia === 'si'
+    ? `Gracias ${nombre}, ya los apuntamos `
+      + `(${total} ${total === 1 ? 'persona' : 'personas'}). `
+      + `Nos vemos el ${CONFIG.fechaTexto.toLowerCase()}. ¡${CONFIG.nombre} se va a poner feliz!`
+    : `Gracias por avisarnos, ${nombre}. Te vamos a extrañar, pero te mandamos un abrazo grande. 🧡`;
+
+  // Si no hay hoja configurada, el WhatsApp es el canal principal:
+  // lo dejamos claro en el texto del botón.
+  $('#enlaceWhatsAppExito').textContent = guardado
+    ? 'AVISAR TAMBIÉN POR WHATSAPP'
+    : 'ENVIAR MI RESPUESTA POR WHATSAPP';
+
+  formulario.classList.add('hidden');
+  panelExito.classList.remove('hidden');
+  panelExito.scrollIntoView({ behavior: 'smooth', block: 'center' });
+});
+
+/* Permitir corregir la respuesta */
+$('#btnCorregir').addEventListener('click', () => {
+  panelExito.classList.add('hidden');
+  formulario.classList.remove('hidden');
+  botonEnviar.disabled = false;
+  botonEnviar.textContent = 'ENVIAR CONFIRMACIÓN';
+  botonEnviar.classList.remove('opacity-70');
+  formulario.scrollIntoView({ behavior: 'smooth', block: 'center' });
+});
+
+pintarCantidad();
+</script>
+</body>
+</html>
