@@ -668,36 +668,44 @@ tailwind.config = {
                          text-lg text-ink placeholder-gray-400 font-semibold resize-none"></textarea>
       </div>
 
-      <!-- Enviar -->
+      <!-- Enviar: abre WhatsApp con el mensaje ya escrito -->
       <button type="submit" id="btnEnviar"
-              class="btn-3d w-full bg-cat hover:bg-catd text-ink font-sign text-lg
+              class="btn-3d w-full bg-[#25D366] text-white font-sign text-lg
                      px-6 py-6 rounded-2xl border-4 border-ink"
-              style="--btn-shadow:#8a6f00">
-        ENVIAR CONFIRMACIÓN
+              style="--btn-shadow:#128C4A">
+        💬 CONFIRMAR POR WHATSAPP
       </button>
 
-      <p class="text-center text-sm text-white/50">
-        ¿Prefieres escribirnos?
-        <a id="enlaceWhatsAppForm" href="#" target="_blank" rel="noopener"
-           class="text-cat font-bold underline underline-offset-4">Mándanos un WhatsApp</a>
+      <p class="text-center text-sm text-white/60 leading-relaxed">
+        Se abrirá WhatsApp con el mensaje ya escrito.<br>
+        Solo tienes que darle <strong class="text-white">enviar</strong>.
       </p>
     </form>
 
-    <!-- ── Confirmación enviada ── -->
+    <!-- ── Último paso: mandar el WhatsApp ── -->
     <div id="panelExito" class="hidden mt-8 rounded-3xl border-4 border-cat bg-cat/10 p-8 text-center">
-      <div class="text-6xl" aria-hidden="true">🎉</div>
-      <h3 class="mt-4 font-sign text-cat text-2xl">¡LISTO!</h3>
+      <div class="text-6xl" aria-hidden="true">💬</div>
+      <h3 class="mt-4 font-sign text-cat text-2xl">¡FALTA UN PASO!</h3>
       <p id="textoExito" class="mt-3 text-lg text-white/85 leading-relaxed"></p>
 
+      <!-- Vista previa del mensaje, para que se vea que ya está escrito -->
+      <div class="mt-6 text-left bg-[#075E54]/30 border-2 border-[#25D366]/40 rounded-2xl p-4">
+        <p class="font-sign text-[#25D366] text-xs tracking-wide">TU MENSAJE</p>
+        <p id="vistaPreviaMensaje" class="mt-2 text-base text-white/85 leading-relaxed"></p>
+      </div>
+
       <a id="enlaceWhatsAppExito" href="#" target="_blank" rel="noopener"
-         class="btn-3d mt-7 inline-flex items-center justify-center gap-2 bg-[#25D366]
-                text-white font-sign text-base px-7 py-4 rounded-xl border-4 border-ink"
+         class="btn-3d mt-6 flex items-center justify-center gap-2 bg-[#25D366]
+                text-white font-sign text-base px-7 py-5 rounded-xl border-4 border-ink"
          style="--btn-shadow:#128C4A">
-        AVISAR TAMBIÉN POR WHATSAPP
+        ABRIR WHATSAPP
       </a>
+      <p class="mt-3 text-sm text-white/50">
+        Si WhatsApp no se abrió solo, toca el botón verde.
+      </p>
 
       <button type="button" id="btnCorregir"
-              class="mt-5 block mx-auto text-white/60 underline underline-offset-4 text-base">
+              class="mt-6 block mx-auto text-white/60 underline underline-offset-4 text-base">
         Me equivoqué, quiero cambiar mi respuesta
       </button>
     </div>
@@ -782,6 +790,10 @@ const CONFIG = {
   // Número completo con código de país, SIN "+", espacios ni guiones.
   whatsapp: '50663940021',
 
+  // Nombre de quien recibe los mensajes. Con esto arranca el saludo:
+  // "Hola Andre, soy ..."
+  anfitrion: 'Andre',
+
   // ── Fotos ─────────────────────────────────────────────────────
   // La principal va en el círculo de la portada: debe ser CUADRADA
   // y con la cara bien centrada.
@@ -838,9 +850,11 @@ if (CONFIG.wazeUrl) {
 function enlaceWhatsApp(texto) {
   return `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(texto)}`;
 }
-const saludoBase = `Hola 👋 Escribo por la invitación del cumpleaños de ${CONFIG.nombre}. `;
-$('#enlaceWhatsAppForm').href = enlaceWhatsApp(saludoBase);
-$('#enlaceWhatsAppPie').href  = enlaceWhatsApp(saludoBase + 'Tengo una pregunta: ');
+// El del pie es solo para dudas; la confirmación tiene su propio mensaje.
+$('#enlaceWhatsAppPie').href = enlaceWhatsApp(
+  `Hola ${CONFIG.anfitrion} 👋 Te escribo por la invitación del cumpleaños de `
+  + `${CONFIG.nombre}. Tengo una pregunta: `
+);
 
 /* ── Fotos ── */
 const fotoPrincipal = $('#fotoPrincipal');
@@ -855,8 +869,8 @@ $('#pieFoto').textContent = `${CONFIG.nombre} · ${CONFIG.edad} años de experie
 
 // Nadie tiene que poner su nombre "oficial": basta con cómo lo conoce el niño.
 $('#ayudaNombre').textContent =
-  `Escribe el nombre con el que ${CONFIG.nombre} te conoce, así como te dice él. `
-  + 'No hacen falta apellidos. 😊';
+  `Escribe el nombre con el que ${CONFIG.nombre} te conoce. `
+  + 'No hacen falta apellidos, que todavía no se los aprende. 😄';
 
 // Si una foto no carga, mostramos un marcador en vez de un ícono roto.
 fotoPrincipal.addEventListener('error', () => {
@@ -1044,16 +1058,21 @@ $('#btnMenos').addEventListener('click', () => {
 
 /* Mensaje que se manda por WhatsApp según la respuesta */
 function mensajeWhatsApp(datos) {
+  const saludo = `Hola ${CONFIG.anfitrion}, soy ${datos.nombre}`;
+  const nota = datos.mensaje ? ` ${datos.mensaje}` : '';
+
   if (datos.asistencia === 'si') {
-    const total = datos.acompanantes + 1;
-    return `¡Hola! Soy ${datos.nombre}. ✅ Confirmo asistencia al cumpleaños de ${CONFIG.nombre}. `
-         + (datos.acompanantes === 0
-              ? 'Voy solo (1 persona).'
-              : `Somos ${total} personas (yo + ${datos.acompanantes} ${datos.acompanantes === 1 ? 'acompañante' : 'acompañantes'}).`)
-         + (datos.mensaje ? ` Nota: ${datos.mensaje}` : '');
+    // "Voy solo/a" si viene por su cuenta; si no, el total de personas.
+    const cuantos = datos.acompanantes === 0
+      ? 'Voy solo/a.'
+      : `Vamos ${datos.acompanantes + 1} personas.`;
+
+    return `${saludo} y te confirmo que voy a ir a la fiesta de ${CONFIG.nombre} 🎉 `
+         + cuantos + nota;
   }
-  return `¡Hola! Soy ${datos.nombre}. 😔 Lamentablemente no podré ir al cumpleaños de ${CONFIG.nombre}.`
-       + (datos.mensaje ? ` ${datos.mensaje}` : '');
+
+  return `${saludo} y lamentablemente no voy a poder ir a la fiesta de `
+       + `${CONFIG.nombre}. 😔` + nota;
 }
 
 /* Guardar en Google Sheets.
@@ -1077,7 +1096,13 @@ async function guardarEnHoja(datos) {
   return true;
 }
 
-formulario.addEventListener('submit', async (evento) => {
+/* El envío es SÍNCRONO a propósito.
+   Los navegadores solo dejan abrir una ventana nueva mientras dura el
+   "gesto del usuario" (el toque en el botón). Si esperáramos la respuesta
+   del guardado con await, ese permiso se pierde y WhatsApp quedaría
+   bloqueado. Por eso: primero abrimos WhatsApp, y el guardado en la hoja
+   viaja en segundo plano. */
+formulario.addEventListener('submit', (evento) => {
   evento.preventDefault();
 
   const nombre  = $('#campoNombre').value.trim();
@@ -1094,40 +1119,32 @@ formulario.addEventListener('submit', async (evento) => {
   if (!valido) return;
 
   const datos = { nombre, asistencia, acompanantes, mensaje };
+  const textoWhats = mensajeWhatsApp(datos);
+  const urlWhats   = enlaceWhatsApp(textoWhats);
 
-  botonEnviar.disabled = true;
-  botonEnviar.textContent = 'ENVIANDO…';
-  botonEnviar.classList.add('opacity-70');
-
-  let guardado = false;
-  try {
-    guardado = await guardarEnHoja(datos);
-  } catch (error) {
-    // Sin internet o script mal configurado: seguimos con WhatsApp.
+  // 1. Guardado en la hoja, sin esperarlo. Si falla, el WhatsApp igual va.
+  guardarEnHoja(datos).catch((error) => {
     console.warn('No se pudo guardar en la hoja:', error);
-  }
+  });
 
-  // Copia local por si acaso: así podemos recuperar la respuesta.
+  // 2. Abrir WhatsApp de inmediato, dentro del mismo gesto.
+  window.open(urlWhats, '_blank', 'noopener');
+
+  // 3. Copia local por si el invitado quiere revisar qué respondió.
   try {
-    localStorage.setItem('rsvp', JSON.stringify({ ...datos, guardado, ts: Date.now() }));
+    localStorage.setItem('rsvp', JSON.stringify({ ...datos, ts: Date.now() }));
   } catch (_) { /* modo privado del navegador */ }
 
-  // Mostrar el panel de agradecimiento
-  const textoWhats = mensajeWhatsApp(datos);
-  $('#enlaceWhatsAppExito').href = enlaceWhatsApp(textoWhats);
+  // 4. Dejar todo listo por si WhatsApp no se abrió solo.
+  $('#enlaceWhatsAppExito').href = urlWhats;
+  $('#vistaPreviaMensaje').textContent = textoWhats;
 
-  const total = acompanantes + 1;
+  // El nombre va después de la coma: mucha gente escribe "la tía Marce"
+  // en minúscula y quedaría feo abriendo la frase.
   $('#textoExito').textContent = asistencia === 'si'
-    ? `Gracias ${nombre}, ya los apuntamos `
-      + `(${total} ${total === 1 ? 'persona' : 'personas'}). `
-      + `Nos vemos el ${CONFIG.fechaTexto.toLowerCase()}. ¡${CONFIG.nombre} se va a poner feliz!`
-    : `Gracias por avisarnos, ${nombre}. Te vamos a extrañar, pero te mandamos un abrazo grande. 🧡`;
-
-  // Si no hay hoja configurada, el WhatsApp es el canal principal:
-  // lo dejamos claro en el texto del botón.
-  $('#enlaceWhatsAppExito').textContent = guardado
-    ? 'AVISAR TAMBIÉN POR WHATSAPP'
-    : 'ENVIAR MI RESPUESTA POR WHATSAPP';
+    ? `Ya casi, ${nombre}. Dale enviar al mensaje en WhatsApp y quedas confirmado.`
+    : `Gracias por avisarnos, ${nombre}. Dale enviar al mensaje y listo. `
+      + 'Te vamos a extrañar. 🧡';
 
   formulario.classList.add('hidden');
   panelExito.classList.remove('hidden');
@@ -1139,7 +1156,7 @@ $('#btnCorregir').addEventListener('click', () => {
   panelExito.classList.add('hidden');
   formulario.classList.remove('hidden');
   botonEnviar.disabled = false;
-  botonEnviar.textContent = 'ENVIAR CONFIRMACIÓN';
+  botonEnviar.textContent = '💬 CONFIRMAR POR WHATSAPP';
   botonEnviar.classList.remove('opacity-70');
   formulario.scrollIntoView({ behavior: 'smooth', block: 'center' });
 });

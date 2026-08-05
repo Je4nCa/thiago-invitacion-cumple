@@ -20,6 +20,7 @@ Cambia solo esos valores:
 | `mapaUrl` | Enlace de Google Maps. Si lo dejas vacío, el botón busca la dirección automáticamente |
 | `nota` | El aviso del recuadro naranja |
 | `whatsapp` | Tu número **con código de país, sin `+` ni espacios**. Ej. Costa Rica `50663940021` |
+| `anfitrion` | El nombre con el que arranca el mensaje: "Hola **Andre**, soy…" |
 | `fotoPrincipal` | La del círculo de la portada. Debe ser **cuadrada** con la cara centrada |
 | `fotoDestacada` | La grande de más abajo. Vertical se ve mejor |
 | `scriptUrl` | La URL del paso 3. Déjala vacía por ahora |
@@ -52,9 +53,29 @@ Para la foto vertical sáltate el recorte y usa `-Z 1350`.
 
 > Si falta una foto, la página muestra un cartel de 🚧 en su lugar; no se rompe.
 
-## 3. Activa las confirmaciones (Google Sheets)
+## 3. Cómo funciona la confirmación
 
-Esto es lo que hace que las respuestas se guarden en una hoja de cálculo tuya.
+Hay **dos cosas que pasan a la vez** cuando alguien toca "Confirmar por WhatsApp":
+
+1. **WhatsApp se abre** con el mensaje ya redactado. El invitado solo da enviar.
+   Este es el canal principal: tú recibes cada confirmación en tu chat.
+2. **En segundo plano**, la respuesta se guarda en tu Google Sheet, sin que el
+   invitado tenga que hacer nada. Esa lista la ves solo tú.
+
+Los mensajes quedan así:
+
+> Hola Andre, soy la tía Marce y te confirmo que voy a ir a la fiesta de Thiago 🎉 Voy solo/a.
+
+> Hola Andre, soy la tía Marce y te confirmo que voy a ir a la fiesta de Thiago 🎉 Vamos 4 personas.
+
+> Hola Andre, soy la tía Marce y lamentablemente no voy a poder ir a la fiesta de Thiago. 😔
+
+Si escribieron algo en "Mensaje", se agrega al final.
+
+### Activar el guardado en Google Sheets
+
+El paso 2 solo funciona si configuras esto. **Sin esto la invitación igual
+sirve** —los WhatsApp te llegan— pero no tendrás la lista automática.
 
 1. Entra a [sheets.new](https://sheets.new) y crea una hoja. Ponle nombre, por ejemplo *Confirmaciones cumple Thiago*.
 2. Menú **Extensiones ▸ Apps Script**.
@@ -73,8 +94,8 @@ Esto es lo que hace que las respuestas se guarden en una hoja de cálculo tuya.
 ¿Quieres además un correo por cada confirmación? En el editor de Apps Script
 selecciona la función `activarAvisoPorCorreo` y dale ▶️ Ejecutar. Una sola vez.
 
-> Si dejas `scriptUrl` vacío, la invitación **sigue funcionando**: el formulario
-> agradece y manda la respuesta por WhatsApp. Solo que tú llevas la lista a mano.
+> Si dejas `scriptUrl` vacío, la invitación **sigue funcionando** igual: los
+> WhatsApp te llegan normal. Solo que llevas la lista a mano desde el chat.
 
 ## 4. Publicar los cambios
 
