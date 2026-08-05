@@ -854,8 +854,9 @@ function enlaceWhatsApp(texto) {
   return `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(texto)}`;
 }
 // El del pie es solo para dudas; la confirmación tiene su propio mensaje.
+// Sin emoji, por lo mismo que se explica en mensajeWhatsApp().
 $('#enlaceWhatsAppPie').href = enlaceWhatsApp(
-  `Hola ${CONFIG.anfitrion} 👋 Te escribo por la invitación del cumpleaños de `
+  `Hola ${CONFIG.anfitrion}, te escribo por la invitación del cumpleaños de `
   + `${CONFIG.nombre}. Tengo una pregunta: `
 );
 
@@ -1105,6 +1106,11 @@ function unirNombres(nombres) {
   return nombres.slice(0, -1).join(', ') + ' y ' + nombres[nombres.length - 1];
 }
 
+/* Ojo con los emoji aquí: NO usar.
+   Los emoji viven fuera del plano básico de Unicode (arriba de U+FFFF) y
+   varios clientes de WhatsApp los rompen cuando llegan por el parámetro
+   "text=" de un enlace: se ven como "?". Las tildes y la ñ sí van bien,
+   porque están dentro del plano básico. */
 function mensajeWhatsApp(datos) {
   const saludo = `Hola ${CONFIG.anfitrion}, soy ${datos.nombre}`;
   // El mensaje opcional va aparte, en su propia línea, para que se lea bien.
@@ -1112,11 +1118,11 @@ function mensajeWhatsApp(datos) {
 
   if (datos.asistencia !== 'si') {
     return `${saludo} y lamentablemente no voy a poder ir a la fiesta de `
-         + `${CONFIG.nombre}. 😔` + nota;
+         + `${CONFIG.nombre}.` + nota;
   }
 
   const cabecera = `${saludo} y te confirmo que voy a ir a la fiesta de `
-                 + `${CONFIG.nombre} 🎉`;
+                 + `${CONFIG.nombre}!`;
 
   if (datos.acompanantes.length === 0) {
     return `${cabecera}\nVoy solo/a.` + nota;
