@@ -17,7 +17,7 @@
 
 const ENCABEZADOS = [
   'Fecha', 'Nombre', 'Asiste', 'Acompañantes',
-  'Nombres de acompañantes', 'Total personas', 'Mensaje',
+  'Nombres de acompañantes', 'Total personas',
 ];
 
 /**
@@ -40,7 +40,6 @@ function doPost(e) {
       Number(datos.acompanantes) || 0,
       datos.nombres || '',
       Number(datos.total) || 0,
-      datos.mensaje || '',
     ]);
 
     return respuesta({ ok: true });
@@ -79,7 +78,6 @@ function obtenerHoja() {
     hoja.setColumnWidth(1, 160); // Fecha
     hoja.setColumnWidth(2, 220); // Nombre
     hoja.setColumnWidth(5, 240); // Nombres de acompañantes
-    hoja.setColumnWidth(7, 320); // Mensaje
     // Los acompañantes van uno por línea dentro de la celda.
     hoja.getRange('E:E').setWrap(true).setVerticalAlignment('top');
   }
@@ -121,7 +119,6 @@ function avisarNuevaConfirmacion() {
       'Acompañantes: ' + fila[3],
       'Quiénes:      ' + (String(fila[4]).replace(/\n/g, ', ') || '—'),
       'Total:        ' + fila[5],
-      'Mensaje:      ' + (fila[6] || '—'),
       '',
       'Ver todas: ' + SpreadsheetApp.getActiveSpreadsheet().getUrl(),
     ].join('\n'),

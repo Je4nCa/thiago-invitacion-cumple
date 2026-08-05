@@ -659,17 +659,6 @@ tailwind.config = {
         <p id="totalPersonas" class="mt-4 text-center text-base text-white/70"></p>
       </div>
 
-      <!-- Mensaje opcional -->
-      <div>
-        <label for="campoMensaje" class="block font-sign text-cat text-sm tracking-wide">
-          MENSAJE <span class="font-body font-normal text-white/50 normal-case">(opcional)</span>
-        </label>
-        <textarea id="campoMensaje" name="mensaje" rows="3"
-                  placeholder="Alguna alergia, si llegas tarde, o un saludo para el cumpleañero…"
-                  class="mt-3 w-full rounded-xl border-4 border-ink bg-white px-4 py-4
-                         text-lg text-ink placeholder-gray-400 font-semibold resize-none"></textarea>
-      </div>
-
       <!-- Enviar: abre WhatsApp con el mensaje ya escrito -->
       <button type="submit" id="btnEnviar"
               class="btn-3d w-full bg-[#25D366] text-white font-sign text-lg
@@ -1113,26 +1102,24 @@ function unirNombres(nombres) {
    porque están dentro del plano básico. */
 function mensajeWhatsApp(datos) {
   const saludo = `Hola ${CONFIG.anfitrion}, soy ${datos.nombre}`;
-  // El mensaje opcional va aparte, en su propia línea, para que se lea bien.
-  const nota = datos.mensaje ? `\n\nNota: ${datos.mensaje}` : '';
 
   if (datos.asistencia !== 'si') {
     return `${saludo} y lamentablemente no voy a poder ir a la fiesta de `
-         + `${CONFIG.nombre}.` + nota;
+         + `${CONFIG.nombre}.`;
   }
 
   const cabecera = `${saludo} y te confirmo que voy a ir a la fiesta de `
                  + `${CONFIG.nombre}!`;
 
   if (datos.acompanantes.length === 0) {
-    return `${cabecera}\nVoy solo/a.` + nota;
+    return `${cabecera}\nVoy solo/a.`;
   }
 
   const total = datos.acompanantes.length + 1;
   const verbo = datos.acompanantes.length === 1 ? 'Me acompaña' : 'Me acompañan';
 
   return `${cabecera}\nVamos ${total} personas. `
-       + `${verbo}: ${unirNombres(datos.acompanantes)}.` + nota;
+       + `${verbo}: ${unirNombres(datos.acompanantes)}.`;
 }
 
 /* Guardar en Google Sheets.
@@ -1150,7 +1137,6 @@ async function guardarEnHoja(datos) {
     // Uno por línea: así la celda de la hoja se lee de un vistazo.
     nombres:      viene ? datos.acompanantes.join('\n') : '',
     total:        viene ? datos.acompanantes.length + 1 : 0,
-    mensaje:      datos.mensaje,
     fecha:        new Date().toLocaleString('es-CR'),
   });
 
@@ -1167,8 +1153,7 @@ async function guardarEnHoja(datos) {
 formulario.addEventListener('submit', (evento) => {
   evento.preventDefault();
 
-  const nombre  = $('#campoNombre').value.trim();
-  const mensaje = $('#campoMensaje').value.trim();
+  const nombre = $('#campoNombre').value.trim();
 
   // Validación con mensajes claros junto a cada campo
   let valido = true;
@@ -1193,7 +1178,7 @@ formulario.addEventListener('submit', (evento) => {
 
   if (!valido) return;
 
-  const datos = { nombre, asistencia, acompanantes, mensaje };
+  const datos = { nombre, asistencia, acompanantes };
   const textoWhats = mensajeWhatsApp(datos);
   const urlWhats   = enlaceWhatsApp(textoWhats);
 

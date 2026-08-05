@@ -67,17 +67,17 @@ cada acompañante (uno por casilla), para que la lista quede ordenada.
 
 Los mensajes quedan así:
 
-> Hola Andre, soy Marcela Villalobos Rojas y te confirmo que voy a ir a la fiesta de Thiago 🎉
+> Hola Andre, soy Marcela Villalobos Rojas y te confirmo que voy a ir a la fiesta de Thiago!
 > Voy solo/a.
 
-> Hola Andre, soy Marcela Villalobos Rojas y te confirmo que voy a ir a la fiesta de Thiago 🎉
+> Hola Andre, soy Marcela Villalobos Rojas y te confirmo que voy a ir a la fiesta de Thiago!
 > Vamos 3 personas. Me acompañan: Juan Pérez Mora y Ana Pérez Villalobos.
->
-> Nota: Ana es alérgica al maní.
 
-> Hola Andre, soy Marcela Villalobos Rojas y lamentablemente no voy a poder ir a la fiesta de Thiago. 😔
+> Hola Andre, soy Marcela Villalobos Rojas y lamentablemente no voy a poder ir a la fiesta de Thiago.
 
-Si escribieron algo en "Mensaje", va al final precedido de "Nota:".
+**No pongas emoji en estos mensajes.** Viven fuera del plano básico de Unicode
+(arriba de U+FFFF) y varios clientes de WhatsApp los muestran como `?` al
+recibirlos por el parámetro `text=` de un enlace. Las tildes y la ñ sí van bien.
 
 ### Activar el guardado en Google Sheets
 
@@ -149,7 +149,6 @@ Abre tu hoja de Google. Cada confirmación es una fila:
 | D · Acompañantes | Cuántos trae |
 | E · Nombres de acompañantes | Uno por línea, con apellidos |
 | F · Total personas | Quien confirma + sus acompañantes |
-| G · Mensaje | Lo que hayan escrito |
 
 Para el gran total de invitados, pon esto en una celda vacía:
 
