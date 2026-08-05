@@ -612,7 +612,7 @@ tailwind.config = {
         <p id="ayudaNombre" class="mt-1 text-sm text-white/60"></p>
         <input id="campoNombre" name="nombre" type="text" autocomplete="name" required
                aria-describedby="ayudaNombre"
-               placeholder="Escribe tu nombre aquí"
+               placeholder="Nombre y apellidos"
                class="mt-3 w-full rounded-xl border-4 border-ink bg-white px-4 py-4
                       text-lg text-ink placeholder-gray-400 font-semibold">
         <p id="errorNombre" class="mt-2 text-alert font-bold hidden">Por favor escribe tu nombre.</p>
@@ -640,20 +640,22 @@ tailwind.config = {
 
       <!-- Acompañantes: se oculta si la respuesta es "no" -->
       <div id="bloqueCantidad" class="hidden">
-        <p class="font-sign text-cat text-sm tracking-wide">¿CUÁNTOS ACOMPAÑANTES VIENEN?</p>
+        <p class="font-sign text-cat text-sm tracking-wide">¿VIENES CON ALGUIEN MÁS?</p>
         <p class="mt-1 text-sm text-white/60">
-          Sin contarte a ti. Cuenta esposo, esposa, niños y quien te acompañe.
+          Escribe el nombre y apellidos de cada persona que viene contigo:
+          pareja, hijos, quien sea. Si vienes solo, deja esto vacío.
         </p>
-        <div class="mt-4 flex items-center justify-center gap-5">
-          <button type="button" id="btnMenos" aria-label="Quitar un acompañante"
-                  class="btn-3d w-16 h-16 rounded-full border-4 border-ink bg-white
-                         text-ink font-sign text-2xl" style="--btn-shadow:#8a8a8a">−</button>
-          <output id="salidaCantidad" for="btnMenos btnMas"
-                  class="font-sign text-cat text-5xl w-20 text-center tabular-nums">0</output>
-          <button type="button" id="btnMas" aria-label="Agregar un acompañante"
-                  class="btn-3d w-16 h-16 rounded-full border-4 border-ink bg-cat
-                         text-ink font-sign text-2xl" style="--btn-shadow:#8a6f00">+</button>
-        </div>
+
+        <div id="listaAcompanantes" class="mt-4 space-y-3"></div>
+
+        <button type="button" id="btnAgregar"
+                class="btn-3d mt-4 w-full bg-cat text-ink font-sign text-base
+                       px-5 py-5 rounded-xl border-4 border-ink"
+                style="--btn-shadow:#8a6f00">
+          + AGREGAR ACOMPAÑANTE
+        </button>
+
+        <p id="errorAcompanantes" class="mt-3 text-alert font-bold hidden"></p>
         <p id="totalPersonas" class="mt-4 text-center text-base text-white/70"></p>
       </div>
 
@@ -691,7 +693,8 @@ tailwind.config = {
       <!-- Vista previa del mensaje, para que se vea que ya está escrito -->
       <div class="mt-6 text-left bg-[#075E54]/30 border-2 border-[#25D366]/40 rounded-2xl p-4">
         <p class="font-sign text-[#25D366] text-xs tracking-wide">TU MENSAJE</p>
-        <p id="vistaPreviaMensaje" class="mt-2 text-base text-white/85 leading-relaxed"></p>
+        <p id="vistaPreviaMensaje"
+           class="mt-2 text-base text-white/85 leading-relaxed whitespace-pre-line"></p>
       </div>
 
       <a id="enlaceWhatsAppExito" href="#" target="_blank" rel="noopener"
@@ -867,10 +870,8 @@ fotoDestacada.alt = CONFIG.fotoDestacada.texto;
 
 $('#pieFoto').textContent = `${CONFIG.nombre} · ${CONFIG.edad} años de experiencia`;
 
-// Nadie tiene que poner su nombre "oficial": basta con cómo lo conoce el niño.
 $('#ayudaNombre').textContent =
-  `Escribe el nombre con el que ${CONFIG.nombre} te conoce. `
-  + 'No hacen falta apellidos, que todavía no se los aprende. 😄';
+  'Escribe tu nombre y apellidos, para llevar bien la lista de invitados.';
 
 // Si una foto no carga, mostramos un marcador en vez de un ícono roto.
 fotoPrincipal.addEventListener('error', () => {
@@ -1006,11 +1007,12 @@ if ('IntersectionObserver' in window) {
 const formulario   = $('#formRsvp');
 const panelExito   = $('#panelExito');
 const botonEnviar  = $('#btnEnviar');
-const salidaCant   = $('#salidaCantidad');
 const bloqueCant   = $('#bloqueCantidad');
 
-let asistencia    = null;  // 'si' | 'no'
-let acompanantes  = 0;     // sin contar a quien llena el formulario
+let asistencia = null;      // 'si' | 'no'
+
+const MAX_ACOMPANANTES = 15;
+const listaAcompanantes = $('#listaAcompanantes');
 
 /* Botones Sí / No */
 document.querySelectorAll('.btn-asistencia').forEach((boton) => {
@@ -1031,48 +1033,100 @@ document.querySelectorAll('.btn-asistencia').forEach((boton) => {
   });
 });
 
-/* Contador de acompañantes */
-function pintarCantidad() {
-  salidaCant.textContent = acompanantes;
+/* Lista de acompañantes: un campo de nombre por persona */
 
-  const total = acompanantes + 1;
-  $('#totalPersonas').textContent = acompanantes === 0
-    ? 'Vienes tú solo. ¡Igual nos alegra un montón!'
-    : `Total: ${total} personas (tú + ${acompanantes} ${acompanantes === 1 ? 'acompañante' : 'acompañantes'}).`;
-
-  // Los botones se apagan visualmente al llegar a los extremos
-  $('#btnMenos').disabled = acompanantes === 0;
-  $('#btnMenos').classList.toggle('opacity-40', acompanantes === 0);
-  $('#btnMas').disabled = acompanantes === 15;
-  $('#btnMas').classList.toggle('opacity-40', acompanantes === 15);
+// Devuelve los nombres escritos, sin espacios sobrantes ni filas vacías.
+function nombresAcompanantes() {
+  return [...listaAcompanantes.querySelectorAll('input')]
+    .map((campo) => campo.value.trim())
+    .filter(Boolean);
 }
 
-$('#btnMas').addEventListener('click', () => {
-  acompanantes = Math.min(acompanantes + 1, 15);
-  pintarCantidad();
-});
-$('#btnMenos').addEventListener('click', () => {
-  acompanantes = Math.max(acompanantes - 1, 0);
-  pintarCantidad();
-});
+function cuantasFilas() {
+  return listaAcompanantes.querySelectorAll('input').length;
+}
+
+function actualizarTotal() {
+  const total = nombresAcompanantes().length + 1;
+
+  $('#totalPersonas').textContent = total === 1
+    ? 'Por ahora vienes tú solo. ¡Igual nos alegra un montón!'
+    : `Total: ${total} personas (tú y ${total - 1} más).`;
+
+  // Al llegar al tope escondemos el botón en vez de dejarlo muerto.
+  const lleno = cuantasFilas() >= MAX_ACOMPANANTES;
+  $('#btnAgregar').disabled = lleno;
+  $('#btnAgregar').classList.toggle('opacity-40', lleno);
+  $('#btnAgregar').textContent = lleno
+    ? 'YA SON MUCHOS, ESCRÍBENOS MEJOR'
+    : '+ AGREGAR ACOMPAÑANTE';
+}
+
+function agregarFilaAcompanante(enfocar = true) {
+  if (cuantasFilas() >= MAX_ACOMPANANTES) return;
+
+  const fila = document.createElement('div');
+  fila.className = 'flex gap-2 items-center';
+
+  const campo = document.createElement('input');
+  campo.type = 'text';
+  campo.autocomplete = 'name';
+  campo.placeholder = 'Nombre y apellidos';
+  campo.className = 'flex-1 min-w-0 rounded-xl border-4 border-ink bg-white px-4 py-4 '
+                  + 'text-lg text-ink placeholder-gray-400 font-semibold';
+  campo.addEventListener('input', actualizarTotal);
+
+  const quitar = document.createElement('button');
+  quitar.type = 'button';
+  quitar.textContent = '×';
+  quitar.setAttribute('aria-label', 'Quitar este acompañante');
+  quitar.className = 'btn-3d shrink-0 w-14 h-14 rounded-xl border-4 border-ink '
+                   + 'bg-white text-ink font-sign text-2xl leading-none';
+  quitar.style.setProperty('--btn-shadow', '#8a8a8a');
+  quitar.addEventListener('click', () => {
+    fila.remove();
+    actualizarTotal();
+    $('#errorAcompanantes').classList.add('hidden');
+  });
+
+  fila.append(campo, quitar);
+  listaAcompanantes.appendChild(fila);
+
+  if (enfocar) campo.focus();
+  actualizarTotal();
+}
+
+$('#btnAgregar').addEventListener('click', () => agregarFilaAcompanante());
 
 /* Mensaje que se manda por WhatsApp según la respuesta */
+/* Une nombres con comas y una "y" al final: "Ana, Luis y Sofía". */
+function unirNombres(nombres) {
+  if (nombres.length === 1) return nombres[0];
+  return nombres.slice(0, -1).join(', ') + ' y ' + nombres[nombres.length - 1];
+}
+
 function mensajeWhatsApp(datos) {
   const saludo = `Hola ${CONFIG.anfitrion}, soy ${datos.nombre}`;
-  const nota = datos.mensaje ? ` ${datos.mensaje}` : '';
+  // El mensaje opcional va aparte, en su propia línea, para que se lea bien.
+  const nota = datos.mensaje ? `\n\nNota: ${datos.mensaje}` : '';
 
-  if (datos.asistencia === 'si') {
-    // "Voy solo/a" si viene por su cuenta; si no, el total de personas.
-    const cuantos = datos.acompanantes === 0
-      ? 'Voy solo/a.'
-      : `Vamos ${datos.acompanantes + 1} personas.`;
-
-    return `${saludo} y te confirmo que voy a ir a la fiesta de ${CONFIG.nombre} 🎉 `
-         + cuantos + nota;
+  if (datos.asistencia !== 'si') {
+    return `${saludo} y lamentablemente no voy a poder ir a la fiesta de `
+         + `${CONFIG.nombre}. 😔` + nota;
   }
 
-  return `${saludo} y lamentablemente no voy a poder ir a la fiesta de `
-       + `${CONFIG.nombre}. 😔` + nota;
+  const cabecera = `${saludo} y te confirmo que voy a ir a la fiesta de `
+                 + `${CONFIG.nombre} 🎉`;
+
+  if (datos.acompanantes.length === 0) {
+    return `${cabecera}\nVoy solo/a.` + nota;
+  }
+
+  const total = datos.acompanantes.length + 1;
+  const verbo = datos.acompanantes.length === 1 ? 'Me acompaña' : 'Me acompañan';
+
+  return `${cabecera}\nVamos ${total} personas. `
+       + `${verbo}: ${unirNombres(datos.acompanantes)}.` + nota;
 }
 
 /* Guardar en Google Sheets.
@@ -1086,8 +1140,10 @@ async function guardarEnHoja(datos) {
   const cuerpo = new URLSearchParams({
     nombre:       datos.nombre,
     asistencia:   viene ? 'Sí' : 'No',
-    acompanantes: viene ? datos.acompanantes : 0,
-    total:        viene ? datos.acompanantes + 1 : 0,
+    acompanantes: viene ? datos.acompanantes.length : 0,
+    // Uno por línea: así la celda de la hoja se lee de un vistazo.
+    nombres:      viene ? datos.acompanantes.join('\n') : '',
+    total:        viene ? datos.acompanantes.length + 1 : 0,
     mensaje:      datos.mensaje,
     fecha:        new Date().toLocaleString('es-CR'),
   });
@@ -1115,6 +1171,19 @@ formulario.addEventListener('submit', (evento) => {
 
   $('#errorAsistencia').classList.toggle('hidden', !!asistencia);
   if (!asistencia) valido = false;
+
+  // Filas de acompañante abiertas pero en blanco: mejor avisar que
+  // descartarlas en silencio, porque quizá se les olvidó escribir el nombre.
+  const acompanantes = nombresAcompanantes();
+  const errorAcomp = $('#errorAcompanantes');
+  const hayVacias = asistencia === 'si' && acompanantes.length < cuantasFilas();
+
+  errorAcomp.classList.toggle('hidden', !hayVacias);
+  if (hayVacias) {
+    errorAcomp.textContent = 'Falta el nombre de algún acompañante. '
+                           + 'Escríbelo o quita la casilla con la ×.';
+    valido = false;
+  }
 
   if (!valido) return;
 
@@ -1161,7 +1230,7 @@ $('#btnCorregir').addEventListener('click', () => {
   formulario.scrollIntoView({ behavior: 'smooth', block: 'center' });
 });
 
-pintarCantidad();
+actualizarTotal();
 </script>
 </body>
 </html>

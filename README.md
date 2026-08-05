@@ -62,15 +62,22 @@ Hay **dos cosas que pasan a la vez** cuando alguien toca "Confirmar por WhatsApp
 2. **En segundo plano**, la respuesta se guarda en tu Google Sheet, sin que el
    invitado tenga que hacer nada. Esa lista la ves solo tú.
 
+El formulario pide **nombre y apellidos**, tanto de quien confirma como de
+cada acompañante (uno por casilla), para que la lista quede ordenada.
+
 Los mensajes quedan así:
 
-> Hola Andre, soy la tía Marce y te confirmo que voy a ir a la fiesta de Thiago 🎉 Voy solo/a.
+> Hola Andre, soy Marcela Villalobos Rojas y te confirmo que voy a ir a la fiesta de Thiago 🎉
+> Voy solo/a.
 
-> Hola Andre, soy la tía Marce y te confirmo que voy a ir a la fiesta de Thiago 🎉 Vamos 4 personas.
+> Hola Andre, soy Marcela Villalobos Rojas y te confirmo que voy a ir a la fiesta de Thiago 🎉
+> Vamos 3 personas. Me acompañan: Juan Pérez Mora y Ana Pérez Villalobos.
+>
+> Nota: Ana es alérgica al maní.
 
-> Hola Andre, soy la tía Marce y lamentablemente no voy a poder ir a la fiesta de Thiago. 😔
+> Hola Andre, soy Marcela Villalobos Rojas y lamentablemente no voy a poder ir a la fiesta de Thiago. 😔
 
-Si escribieron algo en "Mensaje", se agrega al final.
+Si escribieron algo en "Mensaje", va al final precedido de "Nota:".
 
 ### Activar el guardado en Google Sheets
 
@@ -132,13 +139,28 @@ repositorio privado requiere cuenta de pago).
 
 ## Cómo revisar las confirmaciones
 
-Abre tu hoja de Google. Cada confirmación es una fila con fecha, nombre, si asiste,
-cuántos acompañantes trae, el total de personas y el mensaje.
+Abre tu hoja de Google. Cada confirmación es una fila:
+
+| Columna | Contenido |
+|---|---|
+| A · Fecha | Cuándo confirmaron |
+| B · Nombre | Nombre y apellidos de quien confirma |
+| C · Asiste | Sí / No |
+| D · Acompañantes | Cuántos trae |
+| E · Nombres de acompañantes | Uno por línea, con apellidos |
+| F · Total personas | Quien confirma + sus acompañantes |
+| G · Mensaje | Lo que hayan escrito |
 
 Para el gran total de invitados, pon esto en una celda vacía:
 
 ```
-=SUMAR.SI(C:C;"Sí";E:E)
+=SUMAR.SI(C:C;"Sí";F:F)
+```
+
+Y si quieres la lista completa de nombres, de una sola persona por fila:
+
+```
+=DIVIDIR.TEXTO(TEXTOUNIR(CARÁCTER(10);VERDADERO;FILTRAR(B:B;C:C="Sí");FILTRAR(E:E;C:C="Sí"));CARÁCTER(10))
 ```
 
 ---
@@ -149,7 +171,7 @@ Para el gran total de invitados, pon esto en una celda vacía:
 - **Pensada para todas las edades.** Texto de 18px, botones grandes, alto contraste, funciona con teclado y lector de pantalla, y respeta `prefers-reduced-motion` para quien no quiere animaciones.
 - **Móvil primero.** La mayoría la va a abrir desde WhatsApp en el teléfono.
 - **Repetir el envío.** Si alguien confirma dos veces, salen dos filas. Se limpia a mano en la hoja; para 40 invitados no vale la pena complicarlo.
-- **Acompañantes.** El formulario pregunta cuántos acompañantes trae, sin contar a quien llena el formulario. La hoja guarda las dos cifras: acompañantes y total.
+- **Acompañantes.** Se pide el nombre completo de cada uno, en su propia casilla. Si alguien deja una casilla en blanco, el formulario avisa en vez de descartarla en silencio. Tope de 15; más que eso, la invitación pide que te escriban directo.
 
 ### Ver la invitación en tu computadora antes de publicar
 

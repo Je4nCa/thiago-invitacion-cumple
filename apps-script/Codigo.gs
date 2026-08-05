@@ -15,7 +15,10 @@
  * si no, la web seguirá usando la versión vieja.
  */
 
-const ENCABEZADOS = ['Fecha', 'Nombre', 'Asiste', 'Acompañantes', 'Total personas', 'Mensaje'];
+const ENCABEZADOS = [
+  'Fecha', 'Nombre', 'Asiste', 'Acompañantes',
+  'Nombres de acompañantes', 'Total personas', 'Mensaje',
+];
 
 /**
  * Punto de entrada: la invitación manda aquí cada confirmación.
@@ -35,6 +38,7 @@ function doPost(e) {
       datos.nombre || '(sin nombre)',
       datos.asistencia || '',
       Number(datos.acompanantes) || 0,
+      datos.nombres || '',
       Number(datos.total) || 0,
       datos.mensaje || '',
     ]);
@@ -73,8 +77,11 @@ function obtenerHoja() {
         .setBackground('#FFCD11');
     hoja.setFrozenRows(1);
     hoja.setColumnWidth(1, 160); // Fecha
-    hoja.setColumnWidth(2, 200); // Nombre
-    hoja.setColumnWidth(6, 320); // Mensaje
+    hoja.setColumnWidth(2, 220); // Nombre
+    hoja.setColumnWidth(5, 240); // Nombres de acompañantes
+    hoja.setColumnWidth(7, 320); // Mensaje
+    // Los acompañantes van uno por línea dentro de la celda.
+    hoja.getRange('E:E').setWrap(true).setVerticalAlignment('top');
   }
 
   return hoja;
@@ -112,8 +119,9 @@ function avisarNuevaConfirmacion() {
       'Nombre:       ' + fila[1],
       'Asiste:       ' + fila[2],
       'Acompañantes: ' + fila[3],
-      'Total:        ' + fila[4],
-      'Mensaje:      ' + (fila[5] || '—'),
+      'Quiénes:      ' + (String(fila[4]).replace(/\n/g, ', ') || '—'),
+      'Total:        ' + fila[5],
+      'Mensaje:      ' + (fila[6] || '—'),
       '',
       'Ver todas: ' + SpreadsheetApp.getActiveSpreadsheet().getUrl(),
     ].join('\n'),
