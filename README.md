@@ -179,3 +179,7 @@ cd /Users/jeanvillamonte/Documents/thiago-invitacion && python3 -m http.server 4
 ```
 
 Luego abre `http://localhost:4173` en el navegador. Ctrl+C para detenerlo.
+
+---
+
+Hecho por **Jean Carlo Villamonte Murillo** · [Portafolio](https://je4nca.github.io/personal-portfolio/) · [montevostudio.com](https://montevostudio.com)
